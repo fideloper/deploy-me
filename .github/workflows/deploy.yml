@@ -36,6 +36,7 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: staging
+    needs: ["tests"]
 
     steps:
     - name: Deploy staging
@@ -47,7 +48,7 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: production
-    needs: [deploy-staging]
+    needs: ["tests", "deploy-staging"]
 
     steps:
     - name: Deploy production
