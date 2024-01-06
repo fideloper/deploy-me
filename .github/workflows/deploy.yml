@@ -39,7 +39,7 @@ jobs:
     steps:
     - name: Deploy staging
       run: |
-        curl -X POST https://forge.laravel.com/servers/<some-server>/sites/<some-site>/deploy/http?token=<some-token> \
+        curl -X POST https://forge.laravel.com/servers/some-server/sites/some-site/deploy/http?token=some-token \
             -d "forge_deploy_commit=$GITHUB_SHA" -d "forge_deploy_author=$GITHUB_TRIGGERING_ACTOR"
 
   deploy-production:
@@ -51,6 +51,6 @@ jobs:
     steps:
     - name: Deploy production
       run: | 
-        curl -X POST https://forge.laravel.com/servers/<some-server>/sites/<some-site>/deploy/http?token=<some-token> \
+        curl -X POST https://forge.laravel.com/servers/some-server/sites/some-site/deploy/http?token=some-token \
             -d "forge_deploy_commit=$GITHUB_SHA" -d "forge_deploy_author=$GITHUB_TRIGGERING_ACTOR"
 
