@@ -13,7 +13,7 @@ jobs:
     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
         php-version: '8.3'
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: Generate key for .env.testing
@@ -33,16 +33,30 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    needs: ["test"]
 
     steps:
+    - uses: actions/checkout@v4
+
+    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      with:
+        php-version: '8.3'
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
     - name: Build for production
       run: ./build.sh
+    
+    - name: Debug builds dir
+      run: ls -lah builds
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: "$GITHUB_SHA.zip"
-        path: "./builds/$GITHUB_SHA.zip"
+        name: "${{ github.sha }}.zip"
+        path: "./builds/${{ github.sha }}.zip"
 
 
   deploy-staging:
