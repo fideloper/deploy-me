@@ -2,10 +2,10 @@ name: Deploy
 
 on:
   push:
-    branches: [ "main", "approval" ]
+    branches: [ "main" ]
 
 jobs:
-  tests:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -30,11 +30,26 @@ jobs:
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/pest
 
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Build for production
+      run: ./build.sh
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: "$GITHUB_SHA.zip"
+        path: "./builds/$GITHUB_SHA.zip"
+
+
   deploy-staging:
 
     runs-on: ubuntu-latest
     environment: staging
-    needs: ["tests"]
+    needs: ["test", "build"]
 
     steps:
     - name: Deploy staging
@@ -46,7 +61,7 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: production
-    needs: ["tests", "deploy-staging"]
+    needs: ["test", "build", "deploy-staging"]
 
     steps:
     - name: Deploy production
